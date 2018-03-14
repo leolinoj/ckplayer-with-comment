@@ -1,0 +1,6 @@
+.comment{background-color: #00e9b5; width:320px} 
+.submitBox{background-color: #b473f3; width:320px}
+img {
+    -webkit-filter: contrast(200%) brightness(150%);  /* Chrome, Safari, Opera */
+    filter: contrast(200%) brightness(150%);
+}

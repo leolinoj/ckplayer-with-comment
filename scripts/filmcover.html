@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>动态加载影片封面</title>
+</head>
+
+<style type="text/css">
+.slideshow1 img { padding: 15px; border: 1px solid #ccc; background-color: #eee; }
+</style>
+
+<script type="text/javascript">
+function onload(){
+	
+	myfun("#0abab5")
+	askSrc(); 
+	//doFlag = true;                                      //没有var是一种隐式声明，js中隐式声明是全局变量
+};
+
+function loadCovers(){
+	
+	//alert("responseDate是" + responseDate);
+	
+	var div = document.getElementById("slideshow1");
+
+	//alert("flag是：" + doFlag);
+	//请求src
+	//if(doFlag){
+	//	alert("来到过true部分");
+	//	doFlag = false;
+	//	alert("flag变为：" + doFlag);
+	//}else{
+	//alert("来到过加载图片的部分之前");
+	for (var i=0;i<100;i++){
+		//var subDiv = document.createElement("div");
+		//subDiv.height = 300;
+		//subDiv.width = 200;
+		//subDiv.background-color = "#725";
+		
+			//alert("来到过加载图片的部分之中");
+			//添加 超链接
+			var a = document.createElement("a");
+			a.href = "../ckplayer/comment_system/iframe.php?fileAddress=../fileUploads/" + pic2Video(responseDate[i] + "&coverAddress=../fileUploads/thumb/" + responseDate[i]);
+			
+				//添加 img 嵌套在<a>中
+		　　	var img = document.createElement("img");
+		　　	//设置 img 属性，如 id
+		　　	img.setAttribute("id", "newImg");
+		　　	//设置 img 图片地址
+		　　	img.src = "../fileUploads/thumb/" + responseDate[i];
+				//alert("显示每个数据"+img.src);
+				img.height = 200;
+				img.width = 200;
+				a.appendChild(img);
+
+			//subDiv.appendChild(a);
+		
+		div.appendChild(a);
+	}	
+　	responseDate.splice(0,100);
+
+	//}
+}
+
+//滚动条在Y轴上的滚动距离
+
+function getScrollTop(){
+　　var scrollTop = 0, bodyScrollTop = 0, documentScrollTop = 0;
+　　if(document.body){
+　　　　bodyScrollTop = document.body.scrollTop;
+　　}
+　　if(document.documentElement){
+　　　　documentScrollTop = document.documentElement.scrollTop;
+　　}
+　　scrollTop = (bodyScrollTop - documentScrollTop > 0) ? bodyScrollTop : documentScrollTop;
+　　return scrollTop;
+}
+
+//文档的总高度
+
+function getScrollHeight(){
+　　var scrollHeight = 0, bodyScrollHeight = 0, documentScrollHeight = 0;
+　　if(document.body){
+　　　　bodyScrollHeight = document.body.scrollHeight;
+　　}
+　　if(document.documentElement){
+　　　　documentScrollHeight = document.documentElement.scrollHeight;
+　　}
+　　scrollHeight = (bodyScrollHeight - documentScrollHeight > 0) ? bodyScrollHeight : documentScrollHeight;
+　　return scrollHeight;
+}
+
+//浏览器视口的高度
+
+function getWindowHeight(){
+　　var windowHeight = 0;
+　　if(document.compatMode == "CSS1Compat"){
+　　　　windowHeight = document.documentElement.clientHeight;
+　　}else{
+　　　　windowHeight = document.body.clientHeight;
+　　}
+　　return windowHeight;
+}
+
+window.onscroll = function(){
+	//alert("getScrollTop():"+getScrollTop()+"getWindowHeight():"+getWindowHeight()+"getScrollHeight():"+getScrollHeight());
+　　if(getScrollHeight() - (getScrollTop() + getWindowHeight()) < 1){
+		loadCovers();
+　　}
+};
+
+
+
+
+//这里面一直jquery不可用，尽管已经下载了，原因不知道，这面现在已经完成了动态的创建，接下来需要实现的是
+//ajax动态向服务器请求，然后将返回数据放入src中这样可以实现动态创建不同图片，同时接下来要做的就是slider
+//的一个响应，达到一滑到低端就创建图片
+//要知道的两点是alert()可以作为调试使用，同时他会按顺序一个一个依次显示，这就有利于调试，并且发生错误语句后面
+//的alert不会显示，依次显示和错误后不显示的特性是的多次插入alert至少可以判断那句出错
+
+window.responseDate;
+
+function askSrc(){
+	var xmlhttp;
+
+	
+	if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlhttp=new XMLHttpRequest();
+	}else{// code for IE6, IE5
+		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	
+	xmlhttp.onreadystatechange=function(){
+		if (1){
+		//document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
+		responseDate = JSON.parse(xmlhttp.responseText);
+		}
+	}
+	xmlhttp.open("GET","/root/oh-videos/scripts/filmcover.php",true);///////////////////////////这里为请求服务器的地址
+	xmlhttp.send();
+	
+}
+
+function pic2Video(picName){
+
+	var newPicName = picName.replace('.png', '.mp4');
+	return newPicName;
+}
+
+function myfun(color) {
+document.body.style.background = color; // 改变背景颜色
+}
+
+</script>
+
+<body onload="onload()" onclick="loadCovers();">
+
+<div class="slideshow1" id="slideshow1" align="center">
+
+	<span style="font-size:50px; font-weight:bold">这是所有影片的封面</span><br>
+
+
+</div>
+
+
+</body>
+
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
